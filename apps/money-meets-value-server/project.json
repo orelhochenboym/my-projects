@@ -1,44 +1,43 @@
 {
   "name": "money-meets-value-server",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "application",
   "sourceRoot": "apps/money-meets-value-server/src",
-  "tags": [],
+  "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nrwl/vite:build",
+      "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/money-meets-value-server"
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/money-meets-value-server",
+        "main": "apps/money-meets-value-server/src/main.ts",
+        "tsConfig": "apps/money-meets-value-server/tsconfig.app.json",
+        "assets": ["apps/money-meets-value-server/src/assets"]
       },
       "configurations": {
-        "development": {},
-        "production": {}
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/money-meets-value-server/src/environments/environment.ts",
+              "with": "apps/money-meets-value-server/src/environments/environment.prod.ts"
+            }
+          ]
+        }
       }
     },
     "serve": {
-      "executor": "@nrwl/vite:dev-server",
-      "defaultConfiguration": "development",
+      "executor": "@nrwl/js:node",
       "options": {
         "buildTarget": "money-meets-value-server:build"
       },
       "configurations": {
-        "development": {
-          "buildTarget": "money-meets-value-server:build:development",
-          "hmr": true
-        },
         "production": {
-          "buildTarget": "money-meets-value-server:build:production",
-          "hmr": false
+          "buildTarget": "money-meets-value-server:build:production"
         }
-      }
-    },
-    "test": {
-      "executor": "@nrwl/vite:test",
-      "outputs": ["{projectRoot}/coverage"],
-      "options": {
-        "passWithNoTests": true
       }
     },
     "lint": {
@@ -47,6 +46,15 @@
       "options": {
         "lintFilePatterns": ["apps/money-meets-value-server/**/*.ts"]
       }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/money-meets-value-server/jest.config.ts",
+        "passWithNoTests": true
+      }
     }
-  }
+  },
+  "tags": []
 }
